@@ -20,14 +20,9 @@ The client supports the following hub protocols:
 - Json
 - MessagePack
 
-## Examples
-
-- [Chat client/server](https://github.com/sefidgaran/signalr_client/tree/master/example) - A simple client/server chat application.
-- [Integration test app](https://github.com/sefidgaran/signalr_client/tree/master/testapp/client) - To see how a client calls various types of hub functions.
-
 ## Getting Started
 
-Add `signalr_netcore` to your `pubspec.yaml` dependencies:
+Add `azure_signalr` to your `pubspec.yaml` dependencies:
 
 ```yaml
 
@@ -36,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  signalr_netcore:
+  azure_signalr:
 ```
 
 Important Note: if you are experiencing issues (for example not receiving message callback) with the latest version, please give a try to older version as signalr_netcore: 0.1.7+2-nullsafety.3 but bear in mind that this version does not support auto reconnect functionalities and need to be handled manually.
@@ -49,7 +44,7 @@ Let's demo some basic usages:
 
 ```dart
 // Import the library.
-import 'package:signalr_netcore3/signalr_client.dart';
+import 'package:azure_signalr/signalr_client.dart';
 
 // The location of the SignalR Server.
 final serverUrl = "192.168.10.50:51001";
@@ -65,7 +60,7 @@ Logging is supported via the dart [logging package](https://pub.dartlang.org/pac
 ```dart
 // Import theses libraries.
 import 'package:logging/logging.dart';
-import 'package:signalr_netcore3/signalr_client.dart';
+import 'package:azure_signalr/signalr_client.dart';
 
 // Configer the logging
 Logger.root.level = Level.ALL;
@@ -160,7 +155,7 @@ The Hub should be configured to use the msgpack protocol in both the client and 
 ### Client
 
 ```dart
-import 'package:signalr_netcore3/msgpack_hub_protocol.dart';
+import 'package:azure_signalr/msgpack_hub_protocol.dart';
 _hubConnection = HubConnectionBuilder()
           .withUrl(_serverUrl, options: httpOptions)
           /* Configure the Hub with msgpack protocol */
