@@ -1,4 +1,4 @@
-# signalr_client
+# azure_signalr
 
 [![pub package](https://img.shields.io/pub/v/signalr_netcore.svg)](https://pub.dartlang.org/packages/signalr_netcore)
 
