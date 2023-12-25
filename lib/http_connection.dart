@@ -360,7 +360,7 @@ class HttpConnection implements IConnection {
           _transport = _constructTransport(HttpTransportType.WebSockets);
           // We should just call connect directly in this case.
           // No fallback or negotiate in this case.
-          await _startTransport(url, transferFormat);
+          await _startTransport(url, transferFormat, _options.headers);
         } else {
           throw GeneralError(
               "Negotiation can only be skipped when using the WebSocket transport directly.");
@@ -496,7 +496,11 @@ class HttpConnection implements IConnection {
       _logger?.finer(
           "Connection was provided an instance of ITransport, using that directly.");
       _transport = requestedTransport as ITransport?;
-      await _startTransport(connectUrl, requestedTransferFormat);
+      await _startTransport(
+        connectUrl,
+        requestedTransferFormat,
+        _options.headers,
+      );
 
       connectionId = negotiateResponse.connectionId;
       return;
@@ -526,7 +530,11 @@ class HttpConnection implements IConnection {
       }
 
       try {
-        await _startTransport(connectUrl, requestedTransferFormat);
+        await _startTransport(
+          connectUrl,
+          requestedTransferFormat,
+          _options.headers,
+        );
         connectionId = negotiate.connectionId;
         return;
       } catch (ex) {
@@ -568,10 +576,14 @@ class HttpConnection implements IConnection {
     }
   }
 
-  Future<void> _startTransport(String? url, TransferFormat transferFormat) {
+  Future<void> _startTransport(
+    String? url,
+    TransferFormat transferFormat,
+    MessageHeaders? headers,
+  ) {
     _transport!.onReceive = onreceive;
     _transport!.onClose = _stopConnection;
-    return _transport!.connect(url, transferFormat);
+    return _transport!.connect(url, transferFormat, headers);
   }
 
   ITransport _resolveTransport(

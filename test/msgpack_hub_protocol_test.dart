@@ -1,10 +1,11 @@
 import 'dart:typed_data';
-import 'package:signalr_netcore3/errors.dart';
-import 'package:signalr_netcore3/ihub_protocol.dart';
-import 'package:signalr_netcore3/msgpack_hub_protocol.dart';
-import 'package:test/test.dart';
+
+import 'package:azure_signalr/errors.dart';
+import 'package:azure_signalr/ihub_protocol.dart';
+import 'package:azure_signalr/msgpack_hub_protocol.dart';
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
+import 'package:test/test.dart';
 
 Function deepEq = const DeepCollectionEquality().equals;
 

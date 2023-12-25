@@ -1,10 +1,12 @@
 import 'dart:async';
+
 import 'package:http/http.dart';
-import 'package:signalr_netcore3/ihub_protocol.dart';
+import 'package:logging/logging.dart';
+
 import 'errors.dart';
+import 'ihub_protocol.dart';
 import 'signalr_http_client.dart';
 import 'utils.dart';
-import 'package:logging/logging.dart';
 
 typedef OnHttpClientCreateCallback = void Function(Client httpClient);
 

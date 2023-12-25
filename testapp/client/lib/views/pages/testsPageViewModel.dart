@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:azure_signalr/ihub_protocol.dart';
+//import 'package:signalr_netcore3/msgpack_hub_protocol.dart';
+import 'package:azure_signalr/signalr_client.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
-import 'package:signalr_netcore3/ihub_protocol.dart';
-//import 'package:signalr_netcore3/msgpack_hub_protocol.dart';
-import 'package:signalr_netcore3/signalr_client.dart';
 
 import '../../main.dart';
 import '../../tests/tests.dart';

@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:logging/logging.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+
+// import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'errors.dart';
+import 'ihub_protocol.dart';
 import 'itransport.dart';
 import 'utils.dart';
 
@@ -14,7 +17,7 @@ class WebSocketTransport implements ITransport {
   Logger? _logger;
   AccessTokenFactory? _accessTokenFactory;
   bool _logMessageContent;
-  WebSocketChannel? _webSocket;
+  WebSocket? _webSocket;
   StreamSubscription<Object?>? _webSocketListenSub;
 
   @override
@@ -31,7 +34,8 @@ class WebSocketTransport implements ITransport {
         this._logMessageContent = logMessageContent;
 
   @override
-  Future<void> connect(String? url, TransferFormat transferFormat) async {
+  Future<void> connect(String? url, TransferFormat transferFormat,
+      MessageHeaders? headers) async {
     assert(url != null);
 
     _logger?.finest("(WebSockets transport) Connecting");
@@ -50,11 +54,11 @@ class WebSocketTransport implements ITransport {
     var opened = false;
     url = url!.replaceFirst('http', 'ws');
     _logger?.finest("WebSocket try connecting to '$url'.");
-    _webSocket = WebSocketChannel.connect(Uri.parse(url));
+    _webSocket = await WebSocket.connect(url, headers: headers?.asMap);
     opened = true;
     if (!websocketCompleter.isCompleted) websocketCompleter.complete();
     _logger?.info("WebSocket connected to '$url'.");
-    _webSocketListenSub = _webSocket!.stream.listen(
+    _webSocketListenSub = _webSocket!.listen(
       // onData
       (Object? message) {
         if (_logMessageContent && message is String) {
@@ -110,9 +114,9 @@ class WebSocketTransport implements ITransport {
       //_logger?.finest("(WebSockets transport) sending data.");
 
       if (data is String) {
-        _webSocket!.sink.add(data);
+        _webSocket!.add(data);
       } else if (data is Uint8List) {
-        _webSocket!.sink.add(data);
+        _webSocket!.add(data);
       } else {
         throw GeneralError("Content type is not handled.");
       }
@@ -135,7 +139,7 @@ class WebSocketTransport implements ITransport {
       await _webSocketListenSub?.cancel();
       _webSocketListenSub = null;
 
-      _webSocket!.sink.close();
+      _webSocket!.close();
       _webSocket = null;
     }
 

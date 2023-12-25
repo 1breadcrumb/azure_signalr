@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:azure_signalr/signalr_client.dart';
 import 'package:logging/logging.dart';
-import 'package:signalr_netcore3/signalr_client.dart';
 
 import '../../views/pages/testsPageViewModel.dart';
 import '../test.dart';
