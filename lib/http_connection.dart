@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:logging/logging.dart';
 
-import 'web_supporting_http_client.dart';
 import 'errors.dart';
 import 'http_connection_options.dart';
 import 'iconnection.dart';
@@ -15,6 +14,7 @@ import 'server_sent_events_transport.dart';
 import 'signalr_http_client.dart';
 import 'utils.dart';
 import 'web_socket_transport.dart';
+import 'web_supporting_http_client.dart';
 
 enum ConnectionState {
   Connecting,
@@ -564,15 +564,22 @@ class HttpConnection implements IConnection {
     switch (transport) {
       case HttpTransportType.WebSockets:
         return WebSocketTransport(
-            _accessTokenFactory, _logger, _options.logMessageContent);
+          _accessTokenFactory,
+          _logger,
+          _options.logMessageContent,
+        );
       case HttpTransportType.ServerSentEvents:
-        return new ServerSentEventsTransport(_httpClient, _accessTokenFactory,
+        return ServerSentEventsTransport(_httpClient, _accessTokenFactory,
             _logger, _options.logMessageContent);
       case HttpTransportType.LongPolling:
-        return LongPollingTransport(_httpClient, _accessTokenFactory, _logger,
-            _options.logMessageContent);
+        return LongPollingTransport(
+          _httpClient,
+          _accessTokenFactory,
+          _logger,
+          _options.logMessageContent,
+        );
       default:
-        throw new GeneralError("Unknown transport: $transport.");
+        throw GeneralError('Unknown transport: $transport.');
     }
   }
 

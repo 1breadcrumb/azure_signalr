@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:logging/logging.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
-// import 'package:web_socket_channel/web_socket_channel.dart';
-
+import 'client_factory.dart'if (dart.library.js_interop) 'client_factory_web.dart' as platform;
 import 'errors.dart';
 import 'ihub_protocol.dart';
 import 'itransport.dart';
@@ -17,7 +16,7 @@ class WebSocketTransport implements ITransport {
   Logger? _logger;
   AccessTokenFactory? _accessTokenFactory;
   bool _logMessageContent;
-  WebSocket? _webSocket;
+  WebSocketChannel? _webSocket;
   StreamSubscription<Object?>? _webSocketListenSub;
 
   @override
@@ -54,11 +53,11 @@ class WebSocketTransport implements ITransport {
     var opened = false;
     url = url!.replaceFirst('http', 'ws');
     _logger?.finest("WebSocket try connecting to '$url'.");
-    _webSocket = await WebSocket.connect(url, headers: headers?.asMap);
+    _webSocket = platform.socketConnect(Uri.parse(url), headers: headers?.asMap);
     opened = true;
     if (!websocketCompleter.isCompleted) websocketCompleter.complete();
     _logger?.info("WebSocket connected to '$url'.");
-    _webSocketListenSub = _webSocket!.listen(
+    _webSocketListenSub = _webSocket!.stream.listen(
       // onData
       (Object? message) {
         if (_logMessageContent && message is String) {
@@ -114,9 +113,9 @@ class WebSocketTransport implements ITransport {
       //_logger?.finest("(WebSockets transport) sending data.");
 
       if (data is String) {
-        _webSocket!.add(data);
+        _webSocket!.sink.add(data);
       } else if (data is Uint8List) {
-        _webSocket!.add(data);
+        _webSocket!.sink.add(data);
       } else {
         throw GeneralError("Content type is not handled.");
       }
@@ -139,7 +138,7 @@ class WebSocketTransport implements ITransport {
       await _webSocketListenSub?.cancel();
       _webSocketListenSub = null;
 
-      _webSocket!.close();
+      _webSocket!.sink.close();
       _webSocket = null;
     }
 

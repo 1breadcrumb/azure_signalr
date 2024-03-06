@@ -4,6 +4,8 @@ import 'package:http/http.dart';
 import 'package:logging/logging.dart';
 
 import 'errors.dart';
+
+import 'client_factory.dart'if (dart.library.js_interop) 'client_factory_web.dart' as platform;
 import 'ihub_protocol.dart';
 import 'signalr_http_client.dart';
 import 'utils.dart';
@@ -40,7 +42,8 @@ class WebSupportingHttpClient extends SignalRHttpClient {
     return Future<SignalRHttpResponse>(() async {
       final uri = Uri.parse(request.url!);
 
-      final httpClient = Client();
+      final httpClient = platform.httpClient();
+
       if (_httpClientCreateCallback != null) {
         _httpClientCreateCallback!(httpClient);
       }
